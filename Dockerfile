@@ -17,6 +17,8 @@ RUN npm prune --omit=dev
 # ── Stage 2: Run ─────────────────────────────────────────────────────────────
 FROM node:20-alpine
 
+RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 
 COPY --from=builder /app/node_modules ./node_modules
