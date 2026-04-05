@@ -1,222 +1,706 @@
-import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaunchMap - Verify Your Business Idea</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-const EXAMPLES = [
-  'mortgage broker in Austin TX',
-  'personal injury lawyer in Miami FL',
-  'insurance broker in Chicago IL',
-  'tax advisor in Brooklyn NY',
-  'chiropractor in Denver CO',
-  'dentist in Nashville TN',
-];
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: white;
+  color: #0a0a0a;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
 
-export default function Landing() {
-  const navigate   = useNavigate();
-  const [query, setQuery]     = useState('');
-  const [focused, setFocused] = useState(false);
-  const inputRef   = useRef<HTMLInputElement>(null);
+/* Announcement bar */
+.announcement {
+  background: #1a1a1a;
+  padding: 12px 20px;
+  text-align: center;
+}
 
-  function handleScan(e: React.FormEvent) {
-    e.preventDefault();
-    const parts = query.trim().split(' in ');
-    if (parts.length < 2) return;
-    const idea     = parts[0].trim();
-    const location = parts.slice(1).join(' in ').trim();
-    if (!idea || !location) return;
-    navigate('/scan', { state: { idea, location } });
+.announcement a {
+  color: #ff6b35;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.announcement a:hover {
+  text-decoration: underline;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 60px;
+  background: white;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.nav-link {
+  font-size: 15px;
+  color: #0a0a0a;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.book-demo {
+  background: #0a0a0a;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Hero */
+.hero {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 140px 60px 100px;
+}
+
+.hero h1 {
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -2.5px;
+  margin-bottom: 60px;
+  max-width: 900px;
+}
+
+.accent {
+  color: #ff6b35;
+  display: block;
+}
+
+.hero-form {
+  display: flex;
+  gap: 16px;
+  max-width: 500px;
+  margin-bottom: 24px;
+}
+
+.hero-input {
+  flex: 1;
+  padding: 16px 20px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: inherit;
+  background: #fafafa;
+}
+
+.hero-input::placeholder {
+  color: #999;
+}
+
+.hero-input:focus {
+  outline: none;
+  border-color: #0a0a0a;
+  background: white;
+}
+
+.hero-button {
+  background: #0a0a0a;
+  color: white;
+  padding: 16px 32px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.hero-button:hover {
+  background: #2a2a2a;
+}
+
+.hero-note {
+  font-size: 15px;
+  color: #666;
+  max-width: 800px;
+  line-height: 1.7;
+  margin-bottom: 120px;
+}
+
+/* Trust section */
+.trust-section {
+  max-width: 1400px;
+  margin: 0 auto 140px;
+  padding: 0 60px;
+}
+
+.trust-label {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 48px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  flex-wrap: wrap;
+}
+
+.logo-item {
+  font-size: 20px;
+  font-weight: 600;
+  color: #d0d0d0;
+  letter-spacing: -0.5px;
+}
+
+/* What we verify */
+.section {
+  max-width: 1400px;
+  margin: 0 auto 140px;
+  padding: 0 60px;
+}
+
+.section-intro {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.section-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+}
+
+.section-description {
+  font-size: 20px;
+  color: #666;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.verify-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.verify-item {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 40px 32px;
+}
+
+.verify-number {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff6b35;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+.verify-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.verify-list {
+  list-style: none;
+  font-size: 15px;
+  color: #666;
+  line-height: 1.8;
+}
+
+.verify-list li {
+  padding: 4px 0;
+}
+
+.verify-list li::before {
+  content: '·';
+  color: #ff6b35;
+  font-weight: 700;
+  margin-right: 12px;
+  font-size: 20px;
+}
+
+/* How it works */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.process-step {
+  text-align: center;
+  padding: 32px 24px;
+}
+
+.step-number {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 auto 24px;
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.step-description {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Testimonials */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.testimonial {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 40px 32px;
+}
+
+.testimonial-quote {
+  font-size: 16px;
+  color: #0a0a0a;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #d0d0d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: #666;
+}
+
+.author-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.author-title {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Partners */
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 48px;
+  margin-top: 60px;
+}
+
+.partner-item {
+  text-align: center;
+}
+
+.partner-category {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.partner-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0a0a0a;
+}
+
+/* CTA */
+.cta-section {
+  background: #0a0a0a;
+  color: white;
+  padding: 100px 60px;
+  text-align: center;
+  margin-top: 140px;
+}
+
+.cta-title {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 24px;
+}
+
+.cta-description {
+  font-size: 20px;
+  color: #999;
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-button {
+  background: white;
+  color: #0a0a0a;
+  padding: 16px 40px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .verify-grid, .process-grid, .testimonials-grid, .partners-grid {
+    grid-template-columns: 1fr;
   }
+}
+</style>
+</head>
+<body>
 
-  function useExample(ex: string) {
-    setQuery(ex);
-    inputRef.current?.focus();
-  }
+<!-- Announcement bar -->
+<div class="announcement">
+  <a href="#">New: Financial modeling tools for verified ideas → Read more</a>
+</div>
 
-  const isValid = query.trim().toLowerCase().includes(' in ') && query.trim().split(' in ').length >= 2;
+<!-- Navigation -->
+<nav>
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="6" fill="#0a0a0a"/>
+      <path d="M8 20 L14 8 L20 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="14" cy="17" r="1.5" fill="white"/>
+    </svg>
+    LAUNCHMAP
+  </div>
+  <div class="nav-links">
+    <a href="#" class="nav-link">Product</a>
+    <a href="#" class="nav-link">Partners</a>
+    <a href="pricing.html" class="nav-link">Pricing</a>
+    <a href="#" class="book-demo">Get started</a>
+  </div>
+</nav>
 
-  return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', overflow: 'hidden' }}>
+<!-- Hero -->
+<div class="hero">
+  <h1>
+    Verify your business idea<br/>
+    <span class="accent">before taking the next step</span>
+  </h1>
 
-      {/* Background glow */}
-      <div style={{ position: 'fixed', top: -200, left: '50%', transform: 'translateX(-50%)', width: 800, height: 600, background: 'radial-gradient(ellipse, rgba(59,130,246,0.08) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+  <form class="hero-form">
+    <input type="email" class="hero-input" placeholder="your@email.com" />
+    <button type="submit" class="hero-button">Get started</button>
+  </form>
 
-      {/* Nav */}
-      <nav style={{ position: 'relative', zIndex: 10, padding: '22px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <rect width="28" height="28" rx="7" fill="url(#lg)" />
-            <path d="M8 20 L14 8 L20 20" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-            <circle cx="14" cy="17" r="2" fill="white" />
-            <defs><linearGradient id="lg" x1="0" y1="0" x2="28" y2="28"><stop stopColor="#2563eb"/><stop offset="1" stopColor="#7c3aed"/></linearGradient></defs>
-          </svg>
-          <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.4px' }}>LaunchMap</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <a href="#how-it-works" style={{ padding: '7px 14px', fontSize: 13, color: 'var(--text-2)', fontWeight: 500 }}>How it works</a>
-          <a href="#pricing" style={{ padding: '7px 16px', fontSize: 13, color: 'var(--text)', fontWeight: 600, background: 'var(--bg-raised)', border: '1px solid var(--border-hi)', borderRadius: 9 }}>Pricing</a>
-        </div>
-      </nav>
+  <p class="hero-note">
+    LaunchMap assists you in estimating the market, competitors, and customers before you launch. Get objective data across market size, entry barriers, financial requirements, and competitive landscape — then connect with the right partners to execute.
+  </p>
+</div>
 
-      {/* Hero */}
-      <div style={{ position: 'relative', zIndex: 10, maxWidth: 680, margin: '0 auto', padding: '64px 24px 0', textAlign: 'center' }}>
+<!-- Trust badges -->
+<div class="trust-section">
+  <div class="trust-label">TRUSTED BY FOUNDERS LAUNCHING IN</div>
+  <div class="logos">
+    <div class="logo-item">Austin</div>
+    <div class="logo-item">Miami</div>
+    <div class="logo-item">Chicago</div>
+    <div class="logo-item">Denver</div>
+    <div class="logo-item">Nashville</div>
+  </div>
+</div>
 
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px 5px 8px', background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 100, fontSize: 12, color: '#93c5fd', fontWeight: 500, marginBottom: 32 }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#3b82f6', display: 'inline-block', animation: 'pulse-dot 2s infinite' }} />
-          Real-time market intelligence
-        </div>
+<!-- What we verify -->
+<div class="section">
+  <div class="section-intro">
+    <div class="section-label">WHAT WE VERIFY</div>
+    <h2 class="section-title">Six dimensions of market intelligence</h2>
+    <p class="section-description">
+      We analyze your business idea across comprehensive data points to give you complete market visibility before you invest.
+    </p>
+  </div>
 
-        <h1 style={{ fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 900, lineHeight: 1.05, letterSpacing: '-2.5px', marginBottom: 22 }}>
-          Know your market<br />
-          <span style={{ background: 'linear-gradient(90deg, #3b82f6, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            before you commit
-          </span>
-        </h1>
+  <div class="verify-grid">
+    <div class="verify-item">
+      <div class="verify-number">01 · MARKET</div>
+      <div class="verify-title">Market Size & Demand</div>
+      <ul class="verify-list">
+        <li>Total addressable market</li>
+        <li>Market saturation levels</li>
+        <li>Growth trends & projections</li>
+        <li>Seasonal demand patterns</li>
+      </ul>
+    </div>
 
-        <p style={{ fontSize: 17, color: 'var(--text-2)', lineHeight: 1.7, marginBottom: 44, maxWidth: 460, margin: '0 auto 44px' }}>
-          Type your business idea and city. Get real data on market size, competitor weakness, and your opportunity — in under 30 seconds.
-        </p>
+    <div class="verify-item">
+      <div class="verify-number">02 · COMPETITION</div>
+      <div class="verify-title">Competitor Landscape</div>
+      <ul class="verify-list">
+        <li>Active competitor count</li>
+        <li>Profile strength analysis</li>
+        <li>Market share distribution</li>
+        <li>Competitive positioning gaps</li>
+      </ul>
+    </div>
 
-        {/* Search input */}
-        <form onSubmit={handleScan} style={{ marginBottom: 20 }}>
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', background: focused ? 'var(--bg-raised)' : 'var(--bg-card)', border: `1.5px solid ${focused ? 'rgba(59,130,246,0.5)' : 'var(--border-hi)'}`, borderRadius: 16, boxShadow: focused ? '0 0 0 4px rgba(59,130,246,0.08)' : 'none', transition: 'all 0.2s', padding: '4px 4px 4px 20px' }}>
-            <svg style={{ flexShrink: 0, marginRight: 10 }} width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="7.5" cy="7.5" r="5.5" stroke="#3d4a5c" strokeWidth="1.8"/>
-              <path d="M11.5 11.5L15 15" stroke="#3d4a5c" strokeWidth="1.8" strokeLinecap="round"/>
-            </svg>
-            <input
-              ref={inputRef}
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              placeholder="mortgage broker in Austin TX"
-              style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 15, color: 'var(--text)', padding: '11px 0' }}
-            />
-            <button
-              type="submit"
-              disabled={!isValid}
-              style={{ flexShrink: 0, padding: '10px 20px', borderRadius: 12, border: 'none', background: isValid ? 'linear-gradient(135deg, #2563eb, #4f46e5)' : 'rgba(255,255,255,0.06)', color: isValid ? '#fff' : 'var(--text-3)', fontSize: 14, fontWeight: 600, transition: 'all 0.2s', whiteSpace: 'nowrap' }}
-            >
-              Scan market →
-            </button>
-          </div>
-          <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 10 }}>Format: <span style={{ color: 'var(--text-2)' }}>business type</span> in <span style={{ color: 'var(--text-2)' }}>City State</span></p>
-        </form>
+    <div class="verify-item">
+      <div class="verify-number">03 · BARRIERS</div>
+      <div class="verify-title">Entry Requirements</div>
+      <ul class="verify-list">
+        <li>Licensing & certifications</li>
+        <li>Regulatory compliance</li>
+        <li>Insurance obligations</li>
+        <li>Capital requirements</li>
+      </ul>
+    </div>
 
-        {/* Example pills */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, justifyContent: 'center', marginBottom: 72 }}>
-          {EXAMPLES.map(ex => (
-            <button key={ex} onClick={() => useExample(ex)}
-              style={{ padding: '5px 13px', borderRadius: 100, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-2)', fontSize: 12, fontWeight: 400, transition: 'all 0.15s' }}
-              onMouseEnter={e => { (e.target as HTMLButtonElement).style.borderColor = 'var(--border-hi)'; (e.target as HTMLButtonElement).style.color = 'var(--text)'; }}
-              onMouseLeave={e => { (e.target as HTMLButtonElement).style.borderColor = 'var(--border)'; (e.target as HTMLButtonElement).style.color = 'var(--text-2)'; }}
-            >
-              {ex}
-            </button>
-          ))}
-        </div>
+    <div class="verify-item">
+      <div class="verify-number">04 · CUSTOMERS</div>
+      <div class="verify-title">Customer Analysis</div>
+      <ul class="verify-list">
+        <li>Target demographic profiles</li>
+        <li>Acquisition cost estimates</li>
+        <li>Buying behavior patterns</li>
+        <li>Underserved segments</li>
+      </ul>
+    </div>
 
-        {/* Mini stats bar */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 40, padding: '20px 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', marginBottom: 100 }}>
-          {[
-            { val: '100+', label: 'US cities' },
-            { val: '13',   label: 'business verticals' },
-            { val: '30s',  label: 'to your score' },
-          ].map(s => (
-            <div key={s.label} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.5px' }}>{s.val}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div class="verify-item">
+      <div class="verify-number">05 · FINANCIALS</div>
+      <div class="verify-title">Financial Projections</div>
+      <ul class="verify-list">
+        <li>Startup cost breakdown</li>
+        <li>Operating expenses</li>
+        <li>Revenue projections</li>
+        <li>Break-even timeline</li>
+      </ul>
+    </div>
 
-      {/* How it works */}
-      <div id="how-it-works" style={{ maxWidth: 860, margin: '0 auto', padding: '0 24px 100px' }}>
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
-          <div style={{ fontSize: 11, color: 'var(--blue)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>The process</div>
-          <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-1px' }}>From idea to go/no-go in 30 seconds</h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 2 }}>
-          {[
-            { n: '1', icon: '💡', title: 'Drop your idea', body: "Any niche, any US city. Just type it like you'd Google it." },
-            { n: '2', icon: '📍', title: 'We scan Google Maps', body: 'Real Places API data — how many competitors, how strong their profiles are.' },
-            { n: '3', icon: '📊', title: 'Get your score', body: '0–100 opportunity score based on market size and how weak the competition is.' },
-            { n: '4', icon: '🚀', title: 'Launch or walk away', body: 'High score? Start outreach. Low score? Save yourself months of wasted effort.' },
-          ].map((s, i, arr) => (
-            <div key={s.n} style={{ position: 'relative', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: i === 0 ? '14px 0 0 14px' : i === arr.length - 1 ? '0 14px 14px 0' : 0, padding: '28px 24px', borderLeft: i > 0 ? 'none' : undefined }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--bg-raised)', border: '1px solid var(--border-hi)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, marginBottom: 16 }}>
-                {s.icon}
-              </div>
-              <div style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 700, marginBottom: 6 }}>STEP {s.n}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, letterSpacing: '-0.2px' }}>{s.title}</div>
-              <div style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6 }}>{s.body}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div class="verify-item">
+      <div class="verify-number">06 · STRATEGY</div>
+      <div class="verify-title">Go-to-Market</div>
+      <ul class="verify-list">
+        <li>Marketing channels</li>
+        <li>Partnership opportunities</li>
+        <li>Acquisition strategies</li>
+        <li>Launch timeline</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-      {/* Pricing */}
-      <div id="pricing" style={{ maxWidth: 760, margin: '0 auto', padding: '0 24px 100px' }}>
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
-          <div style={{ fontSize: 11, color: 'var(--blue)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>Pricing</div>
-          <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-1px' }}>Start free. Go deeper when it matters.</h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
-          {[
-            {
-              name: 'Free scan', price: '$0', sub: 'No signup needed',
-              features: ['Live Google Maps data', 'Competitor count + strength', 'Opportunity score 0–100', 'Top 5 competitors ranked', 'AI market verdict'],
-              cta: 'Start scanning', primary: false,
-            },
-            {
-              name: 'Full report', price: '$29', sub: 'One-time, per market',
-              features: ['Everything in free', 'Legal & licensing requirements', 'Estimated setup costs', 'GTM action plan', 'PDF download'],
-              cta: 'Get full report', primary: true,
-            },
-          ].map(p => (
-            <div key={p.name} style={{ background: p.primary ? 'linear-gradient(160deg, #0d1a3a, #0d1526)' : 'var(--bg-card)', border: `1px solid ${p.primary ? 'rgba(59,130,246,0.25)' : 'var(--border)'}`, borderRadius: 'var(--radius)', padding: 28 }}>
-              {p.primary && <div style={{ fontSize: 10, fontWeight: 700, color: '#60a5fa', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>Most popular</div>}
-              <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>{p.name}</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 4 }}>
-                <span style={{ fontSize: 38, fontWeight: 900, letterSpacing: '-2px' }}>{p.price}</span>
-              </div>
-              <div style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 24 }}>{p.sub}</div>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 9, marginBottom: 24 }}>
-                {p.features.map(f => (
-                  <li key={f} style={{ display: 'flex', gap: 10, fontSize: 13, color: 'var(--text-2)', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--green)', flexShrink: 0, marginTop: 1 }}>✓</span>{f}
-                  </li>
-                ))}
-              </ul>
-              <button onClick={() => inputRef.current?.focus()} style={{ width: '100%', padding: '11px', borderRadius: 10, border: p.primary ? 'none' : '1px solid var(--border-hi)', background: p.primary ? 'linear-gradient(135deg, #2563eb, #4f46e5)' : 'transparent', color: 'var(--text)', fontWeight: 600, fontSize: 14 }}>
-                {p.cta}
-              </button>
-            </div>
-          ))}
-        </div>
-        {/* Pipeline tier */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '22px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>Launch Pipeline</div>
-            <div style={{ fontSize: 13, color: 'var(--text-2)' }}>Automated outreach to your entire market · 1,000 targeted contacts/day</div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
-            <span style={{ fontSize: 26, fontWeight: 900, letterSpacing: '-1px' }}>$99<span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-3)' }}>/mo</span></span>
-            <button style={{ padding: '9px 18px', borderRadius: 9, border: '1px solid rgba(59,130,246,0.3)', background: 'rgba(59,130,246,0.08)', color: '#93c5fd', fontSize: 13, fontWeight: 600 }}>
-              Coming soon
-            </button>
-          </div>
-        </div>
-      </div>
+<!-- How it works -->
+<div class="section">
+  <div class="section-intro">
+    <div class="section-label">HOW IT WORKS</div>
+    <h2 class="section-title">From signup to verified launch</h2>
+    <p class="section-description">
+      Four steps from initial idea to market entry, guided by data at every stage.
+    </p>
+  </div>
 
-      {/* Footer */}
-      <div style={{ borderTop: '1px solid var(--border)', padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="url(#lg2)"/><path d="M8 20 L14 8 L20 20" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/><circle cx="14" cy="17" r="2" fill="white"/><defs><linearGradient id="lg2" x1="0" y1="0" x2="28" y2="28"><stop stopColor="#2563eb"/><stop offset="1" stopColor="#7c3aed"/></linearGradient></defs></svg>
-          <span style={{ fontSize: 14, fontWeight: 600 }}>LaunchMap</span>
-        </div>
-        <span style={{ fontSize: 12, color: 'var(--text-3)' }}>Know before you go. © 2026</span>
+  <div class="process-grid">
+    <div class="process-step">
+      <div class="step-number">1</div>
+      <div class="step-title">Register</div>
+      <div class="step-description">
+        Create account and enter your business idea with target location
       </div>
     </div>
-  );
-}
+
+    <div class="process-step">
+      <div class="step-number">2</div>
+      <div class="step-title">AI Analysis</div>
+      <div class="step-description">
+        System scans market data across six key verification dimensions
+      </div>
+    </div>
+
+    <div class="process-step">
+      <div class="step-number">3</div>
+      <div class="step-title">Review</div>
+      <div class="step-description">
+        Receive objective findings with both criticism and opportunities
+      </div>
+    </div>
+
+    <div class="process-step">
+      <div class="step-number">4</div>
+      <div class="step-title">Execute</div>
+      <div class="step-description">
+        Upgrade for full plan and partner introductions if viable
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Testimonials -->
+<div class="section">
+  <div class="section-intro">
+    <div class="section-label">CUSTOMER STORIES</div>
+    <h2 class="section-title">Verified before launch</h2>
+    <p class="section-description">
+      Founders who used LaunchMap to validate their ideas before committing capital.
+    </p>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <div class="testimonial-quote">
+        "LaunchMap showed me Austin's mortgage market had weak digital competition. That insight shaped my entire GTM — I focused on Google Local Services and it paid off immediately."
+      </div>
+      <div class="testimonial-author">
+        <div class="author-avatar">MR</div>
+        <div>
+          <div class="author-name">Michael Rodriguez</div>
+          <div class="author-title">Mortgage Broker, Austin</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-quote">
+        "The analysis showed Miami's PI market was oversaturated with 89 established firms. Saved me $75K in startup costs and 6 months. Now exploring a different market."
+      </div>
+      <div class="testimonial-author">
+        <div class="author-avatar">JC</div>
+        <div>
+          <div class="author-name">Jennifer Chen</div>
+          <div class="author-title">Attorney, Miami</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial">
+      <div class="testimonial-quote">
+        "LaunchMap identified 12 agents with weak online presence who were perfect partners. Reached out to all before launch — closed 3 partnerships in the first month."
+      </div>
+      <div class="testimonial-author">
+        <div class="author-avatar">DP</div>
+        <div>
+          <div class="author-name">David Patterson</div>
+          <div class="author-title">Insurance Broker, Chicago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Partners -->
+<div class="section">
+  <div class="section-intro">
+    <div class="section-label">PARTNER NETWORK</div>
+    <h2 class="section-title">Connections that accelerate launch</h2>
+    <p class="section-description">
+      When your idea is verified, we connect you with trusted partners across legal, financial, and operational domains.
+    </p>
+  </div>
+
+  <div class="partners-grid">
+    <div class="partner-item">
+      <div class="partner-category">Legal</div>
+      <div class="partner-name">LegalZoom</div>
+    </div>
+    <div class="partner-item">
+      <div class="partner-category">Licensing</div>
+      <div class="partner-name">NMLS Partners</div>
+    </div>
+    <div class="partner-item">
+      <div class="partner-category">Accounting</div>
+      <div class="partner-name">Bench</div>
+    </div>
+    <div class="partner-item">
+      <div class="partner-category">Insurance</div>
+      <div class="partner-name">Hiscox</div>
+    </div>
+    <div class="partner-item">
+      <div class="partner-category">Marketing</div>
+      <div class="partner-name">Google LSA</div>
+    </div>
+    <div class="partner-item">
+      <div class="partner-category">CRM</div>
+      <div class="partner-name">HubSpot</div>
+    </div>
+    <div class="partner-item">
+      <div class="partner-category">Banking</div>
+      <div class="partner-name">Mercury</div>
+    </div>
+    <div class="partner-item">
+      <div class="partner-category">Web</div>
+      <div class="partner-name">Webflow</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2 class="cta-title">Ready to verify your idea?</h2>
+  <p class="cta-description">
+    Join founders who saved time and capital by validating before launch.
+  </p>
+  <a href="#" class="cta-button">Get started →</a>
+</div>
+
+</body>
+</html>
