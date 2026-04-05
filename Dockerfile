@@ -1,8 +1,7 @@
 # ── Stage 1: Build ───────────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
-# native deps for better-sqlite3
-RUN apk add --no-cache python3 make g++
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY package*.json ./
@@ -15,9 +14,7 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 # ── Stage 2: Run ─────────────────────────────────────────────────────────────
-FROM node:20-alpine
-
-RUN apk add --no-cache libc6-compat
+FROM node:20-slim
 
 WORKDIR /app
 
@@ -27,7 +24,6 @@ COPY --from=builder /app/server      ./server
 COPY --from=builder /app/package.json ./
 
 ENV NODE_ENV=production
-ENV PORT=3001
 EXPOSE 3001
 
 CMD ["node_modules/.bin/tsx", "server/index.ts"]
